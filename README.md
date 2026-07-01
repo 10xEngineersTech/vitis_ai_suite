@@ -23,7 +23,7 @@ This guide takes you through executing optimized, pre-compiled model examples di
 ### Prerequisites & Downloads
 
 1. **Board Image:** Download the pre-built Kria KV260 DPU Image [v2022.2-v3.0.0.img.gz](https://account.amd.com/en/forms/downloads/design-license-xef.html?filename=xilinx-kv260-dpu-v2022.2-v3.0.0.img.gz).
-   * *Struggling with regional download blocks? Check [Issue #2]([https://www.google.com/search?q=./issues/2](https://github.com/10xEngineersTech/vitis_ai_suite/issues/2)).*
+   * *Struggling with regional download blocks? Check [Issue #2]((https://github.com/10xEngineersTech/vitis_ai_suite/issues/2)).*
 
 2. **Flashing Tool:** Download and install [Balena Etcher](https://etcher.balena.io/).
 3. **Sample Assets:** Download the official evaluation datasets to your laptop:
