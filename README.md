@@ -23,7 +23,7 @@ This guide takes you through executing optimized, pre-compiled model examples di
 ### Prerequisites & Downloads
 
 1. **Board Image:** Download the pre-built Kria KV260 DPU Image [v2022.2-v3.0.0.img.gz](https://account.amd.com/en/forms/downloads/design-license-xef.html?filename=xilinx-kv260-dpu-v2022.2-v3.0.0.img.gz).
-   * *Struggling with regional download blocks? Check [Issue #2](https://github.com/10xEngineersTech/vitis_ai_suite/issues/2).*
+   * *Struggling with regional download blocks? Check [Issue #1](https://github.com/10xEngineersTech/vitis_ai_suite/issues/1).*
 
 2. **Flashing Tool:** Download and install [Balena Etcher](https://etcher.balena.io/).
 3. **Sample Assets:** Download the official evaluation datasets to your laptop:
@@ -59,7 +59,7 @@ sudo putty /dev/ttyUSB1 -serial -sercfg 115200,8,n,1,N
 
 1. Power on the board.
 2. If the board boots successfully, proceed to Step 4.
-   * *If the board skips your SD card and runs an old image or enters a firmware recovery screen, follow the hardware override steps in [Issue #3](https://github.com/10xEngineersTech/vitis_ai_suite/issues/3).*
+   * *If the board skips your SD card and runs an old image or enters a firmware recovery screen, follow the hardware override steps in [Issue #1](https://github.com/10xEngineersTech/vitis_ai_suite/issues/1).*
 
 #### Step 4: Network Pairing & SSH Remote Control
 
