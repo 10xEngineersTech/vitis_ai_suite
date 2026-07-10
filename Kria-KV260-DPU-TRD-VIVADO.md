@@ -79,3 +79,71 @@ now navigate to AXI Port to Clock section, enable the pl_clk0 and make it defaul
 
 now save and validate you project and click on create bitstream.
 
+once the bitstreame is genrated, now goto file->Export->Export platfor-> Hrdware and then click on include bitstreame like following, and exprt it.
+<img width="1810" height="918" alt="image" src="https://github.com/user-attachments/assets/5b3c93ca-443d-4a46-b744-492f1aee0b08" />
+
+We will be referring “./prj/Vivado/sw/README.md” which has detailed the necessary steps for DPU-TRD Petalinux build while some steps will not needed for us.
+1. Now create the project
+cd $TRD_HOME/
+$petalinux-create -t project -s <BSP_directory>/xilinx-kv260-starterkit-v2022.2-10141622.bsp --name kv260-dpu-trd
+
+2. Loading Hardware-XSA
+cd kv260-dpu-trd
+petalinux-config --get-hw-description=$TRD_HOME/prj/Vivado/hw/prj/ --silentconfig
+
+then 
+petalinux-config
+
+now you will see the following GUI
+<img width="1034" height="838" alt="image" src="https://github.com/user-attachments/assets/975d61ee-9e4d-499d-8af6-8113af08cb12" />
+
+3. Config the project
+Enable FPGA Manager: goto FPGA Manager -> press enter and click Y to select it.
+Disable TFTPboot Copy: goto Image Packaging Configuration ---> unselect Copy final images to tftpboot  [ ]
+
+now you Image Packaging Configuration section should look like this
+<img width="1034" height="838" alt="image" src="https://github.com/user-attachments/assets/c97773f4-24fe-446d-8fef-e864c0c12fd9" />
+
+now do exit and save this.
+
+4. Kernel Config
+Now run following kernel config command and enable the DPU Driver:
+petalinux-config -c kernel
+scroll down to Device Drivers -->
+then scroll to Misc devices -->
+select <*> Xilinux Deep learning Processing Unit (DPU) Driver
+<img width="1782" height="927" alt="image" src="https://github.com/user-attachments/assets/cadc98b7-498b-45a9-9ce7-92ea30332393" />
+exit and save
+
+5. Copying the recipes from “Vitis DPU TRD Files:
+You have to copy: recipes-apps, recipes-vitis-ai, and then copy/merge recipes-kernel:
+cp -r ../prj/Vivado/sw/meta-vitis/recipes-apps ./project-spec/meta-user/
+cp -r ../prj/Vivado/sw/meta-vitis/recipes-vitis-ai ./project-spec/meta-user/
+cp -rut ../prj/Vivado/sw/meta-vitis/recipes-kernel ./project-spec/meta-user/
+
+6. Update “/project-spec/meta-user/conf/petalinuxbsp.conf”,
+nano ./project-spec/meta-user/conf/petalinuxbsp.conf
+add these lines at the end
+IMAGE_INSTALL:append = " vitis-ai-library "
+IMAGE_INSTALL:append = " vitis-ai-library-dev "
+IMAGE_INSTALL:append = " resnet50 "
+^o enter ^x
+
+7. Update“/project-spec/meta-user/conf/user-rootfsconfig”,
+nano ./project-spec/meta-user/conf/user-rootfsconfig 
+add these lines at the end
+CONFIG_vitis-ai-library
+CONFIG_vitis-ai-library-dev
+CONFIG_vitis-ai-library-dbg
+CONFIG_dnf
+CONFIG_nfs-utils
+^o enter ^x
+
+8. Rootfs config:
+petalinux-config -c rootfs
+navigate to user packages and select the following
+<img width="1028" height="585" alt="image" src="https://github.com/user-attachments/assets/c7d6bf45-beb1-450e-a47e-806ddc4caf51" />
+exit and save
+
+9. Now run the petalinux build.
+petalinux-build
