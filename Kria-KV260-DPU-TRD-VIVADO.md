@@ -2,7 +2,6 @@
 i. Install Vitis/VIVADO 2022.2 and Petalinux 2022.2
 ii. Download Vitis AI(3.0) DPU TRD files: DPUCZDX8G_VAI_v3.0.tar.gz (link:https://www.xilinx.com/bin/public/openDownload?filename=DPUCZDX8G_VAI_v3.0.tar.gz)
 iii. Download Petalinux 2022.2 BSP for KR260 (link:https://drive.google.com/drive/u/0/folders/13qcbGNd81VAhOV7NYlbpO_9hlCN2tkJL)
-
 iv. Linux/Ubuntu PC with 20.04 LTS (preferred also for VIVADO/Vitis and Petalinux 2022.2 tools).
 
 #B. VIVADO IP Design
@@ -147,3 +146,54 @@ exit and save
 
 9. Now run the petalinux build.
 petalinux-build
+
+10. After build completes, create the WIC image
+petalinux-package --wic --images-dir images/linux/ --bootfiles "ramdisk.cpio.gz.u-boot,boot.scr,Image,system.dtb,system-zynqmp-sck-kv-g-revB.dtb" --disk-name "mmcblk1" --wic-extra-args "-c gzip"
+
+D. Preparing SD Card
+You can use Balena Etcher for burning SD card (16GB preferred) with WIC image created in previous step “petalinux project build”.
+cd ./images/linux/
+and here you will find the image with name "petalinux-sdimage.wic.gz", open balena-etcher, and flash the image in SD Card.
+<img width="1028" height="585" alt="image" src="https://github.com/user-attachments/assets/68b8541d-a5bd-44ee-9996-e2d4ff087770" />
+
+
+E. Creating firmware files (DTBO)
+Here we will use XSCT for creating DTSI from XSA file and then use DTC for compiling DTSI into DTBO.
+1. If you have Vitis/VIVADO installed on your PC then source that Vivado or Vitis and enter “xsct” in terminal, it will give you XSCT terminal. 
+source <Vivado install path>/Vivado/2022.2/settings64.sh
+xsct
+
+2. Now we can create the DTSI or device tree using XSCT
+createdts -hw $TRD_HOME/prj/Vivado/hw/prj/top_wrapper.xsa -zocl -platform-name KV260 -git-branch xlnx_rel_v2022.2 -overlay -compile -out $TRD_HOME/prj/Vivado/sw/kv260-dpu-trd/dt
+exit
+cd ../../
+
+3. Use DTC (Device Tree Compiler) to compile DTSI into DTBO:
+dtc -@ -O dtb -o ./kv260.dtbo ./dt/KV260/psu_cortexa53_0/device_tree_domain/bsp/pl.dtsi
+cp ./build/tmp/sysroots-components/xilinx_k26_kv/k26-starter-kits/lib/firmware/xilinx/k26-starter-kits/shell.json .
+cp ../prj/Vivado/hw/prj/KV260.runs/impl_1_01/top_wrapper.bin ./kv260.bit.bin
+
+At this time you should have the below files ready
+1. kv260.bit.bin
+2. kv260.dtbo
+3. shell.json
+4. SD Card with petalinux-sdimage.wic.gz flashed image
+
+F. Copying firmware files to Kria KR260 Board
+here you need to boot our custom image to kria kv260 board, for that you can take help from this file (link:https://github.com/10xEngineersTech/vitis_ai_suite/blob/main/README.md)
+
+now move the firmware files to the board.
+scp shell.json  petalinux@10.42.0.27:~/
+scp kv260.dtbo petalinux@10.42.0.27:~/
+scp kv260.bit.bin petalinux@10.42.0.27:~/
+
+G. Loading firmware in KR260
+1. We have DTBO, BIT.BIN and JSON file inside /home/petalinuxdirectory.
+2. Now create “kv260-dpu-trd” directory inside “/lib/firmware/xilinx” with sudo.
+   sudo mkdir /lib/firmware/xilinx/kv260-dpu-trd
+3. Copy all three files inside “/lib/firmware/xilinx/kv260-dpu-trd” with sudo.
+  sudo cp ./* /lib/firmware//xilinx/kv260-dpu-trd/
+4. Run, sudo xmutil listapps to see application
+5. Run, sudo xmutil unloadapp, to unload the default app
+6. Run, sudo xmutil loadapp kr260-dpu-trd.
+
