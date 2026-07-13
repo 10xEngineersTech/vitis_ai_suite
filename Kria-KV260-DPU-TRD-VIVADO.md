@@ -130,6 +130,10 @@ Click **Save**, then **Regenerate Layout**. Your design should now look like thi
 <img width="1810" height="918" alt="Regenerated block design" src="https://github.com/user-attachments/assets/f22941fa-6660-4209-9515-aced6620a047" />
 
 ### 6. Configure the platform clock and AXI ports
+ 
+This step tells Vivado which AXI port and which clock the platform should use as its main connection to the DPU. Without this, Vivado has no default clock or port assigned to the platform, and it cannot generate the hardware handoff file (`hpfm`) needed later.
+ 
+> **If you skip this step**, the bitstream generation step will fail with an error similar to: *"select at least one clock and AXI port."* Come back to this step and complete it before trying to generate the bitstream again.
 
 Click **Platform Setup** (next to the Diagram tab). Go to the **AXI Port** section and select a master AXI port under the Zynq section.
 
