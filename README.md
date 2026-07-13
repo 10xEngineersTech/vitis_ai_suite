@@ -104,11 +104,3 @@ The application will execute inference on the hardware DPU and output a new imag
 > 💡 **Tip:** You can inspect the individual `readme.md` files located within each model sample subfolder to test different variations like ADAS, segmentation, or posture analysis.
 
 ---
-
-## 🛠️ Troubleshooting & Known Bottlenecks
-
-We track setup exceptions inside the repository Issue tracker. If you hit a wall, look at these standard resolutions:
-
-1. **[Issue #1] Git Environment Mismatch:** Why you must use the **Vitis AI Branch 3.0** instead of `main`/`master` to prevent compilation errors.
-2. **[Issue #2] Region Access Blocks:** Alternative local mirror links for pulling pre-built target firmware files.
-3. **[Issue #3] QSPI Persistence Failure:** How to use the physical `FWUEN` switch and local static IP browser configurations to correct an invalid boot sequence layout.
