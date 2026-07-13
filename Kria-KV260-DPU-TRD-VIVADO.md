@@ -423,3 +423,5 @@ sudo ../samples/bin/resnet50 ../images/jinrikisha-911722.JPEG
 ```
 
 > **Note:** Always run DPU-related commands as `sudo`. Make sure the arguments are in the correct order — the `resnet50` sample takes an **image file** as its argument and looks for `resnet50.xmodel` in the current directory.
+
+if you want to Run Pre-compiled Vitis-AI Examples on a Custom Image then you should visit [[Issue#2](https://github.com/10xEngineersTech/vitis_ai_suite/issues/2)]
