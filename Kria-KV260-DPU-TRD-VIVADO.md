@@ -1,6 +1,6 @@
 # Kria KV260 DPU-TRD Vivado Flow — Vitis AI 3.0 Tutorial
 
-This guide explains how to build a custom DPU hardware design for the Kria KV260 Vision AI Starter Kit using the Vivado flow, then deploy it with PetaLinux and Vitis AI 3.0.
+This guide explains how to build a DPU hardware design for the Kria KV260 Vision AI Starter Kit using the Vivado flow, then deploy it with PetaLinux and Vitis AI 3.0.
 
 ---
 
