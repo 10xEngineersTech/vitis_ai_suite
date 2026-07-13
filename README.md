@@ -104,3 +104,44 @@ The application will execute inference on the hardware DPU and output a new imag
 > 💡 **Tip:** You can inspect the individual `readme.md` files located within each model sample subfolder to test different variations like ADAS, segmentation, or posture analysis.
 
 ---
+ 
+## 🛠️ Phase 2: Custom Datasets (Standard Architectures)
+ 
+This guide takes you through compiling your own applications for standard model architectures and running them on the Kria KV260 board.
+ 
+> **Note:** You need a Docker container or a powerful Host Linux PC for this phase.
+ 
+### Setting Up the Host
+ 
+1. **Clone the Vitis AI repository:**
+```bash
+   cd ~
+   git clone https://github.com/Xilinx/Vitis-AI
+```
+ 
+2. **Install the cross-compilation environment:**
+```bash
+   cd Vitis-AI/board_setup/mpsoc
+   ./host_cross_compiler_setup.sh
+```
+ 
+   At the end of the script, you will see output like the following, which you should follow:
+ 
+```
+   Please run the following command to enable Cross Compiler
+     source /home/user/petalinux_sdk_2022.2/environment-setup-cortexa72-cortexa53-xilinx-linux
+   If the above command fails, run the following commands to enable Cross Compiler
+     unset LD_LIBRARY_PATH
+     source /home/user/petalinux_sdk_2022.2/environment-setup-cortexa72-cortexa53-xilinx-linux
+```
+ 
+Your host is now ready to compile applications.
+ 
+For example, to compile the classification sample from the Vitis AI Library:
+ 
+```bash
+cd ~/Vitis-AI/examples/vai_library/samples/classification
+bash -x build.sh
+```
+ 
+---
