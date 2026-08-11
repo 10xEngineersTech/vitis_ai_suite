@@ -22,6 +22,7 @@ The `zynqmp-display` DRM driver on KV260 is broken for GStreamer `kmssink` witho
 
 ---
 
+# Example 1
 ## Part 1 — Prepare the Application Code (on Host PC)
 
 ### Step 1 — Choose Your Model and Locate the Test Application
@@ -89,6 +90,16 @@ cap.set(cv::CAP_PROP_FRAME_HEIGHT, 360);
 // With this:
 cap.set(cv::CAP_PROP_FRAME_WIDTH, ENV_PARAM(DEMO_CAMERA_WIDTH));
 cap.set(cv::CAP_PROP_FRAME_HEIGHT, ENV_PARAM(DEMO_CAMERA_HEIGHT));
+```
+
+Then replace the hardcoded line in `main_for_video_demo`:
+
+```cpp
+// Replace this:
+gui_layout() = {{0, 0, 640, 360}};
+
+// With this:
+gui_layout() = {{0, 0, DEMO_CAMERA_WIDTH, DEMO_CAMERA_HEIGHT}};
 ```
 
 ---
@@ -316,6 +327,72 @@ thread [SORT-0] frame id 2 FPS: 10.87
 
 **Expected output on HDMI display:** Live camera feed upscaled to 1920×1080 with YOLOv3 bounding boxes drawn around detected objects and an FPS counter in the top-left corner.
 
+---
+
+# Example 2: Running the Multi-Task Demo Application
+
+### 1. Build the Application
+
+1. Navigate to the application directory:
+```bash
+cd Vitis-AI/example/vai_library/apps/multitask_v3_quad_windows/
+
+```
+
+
+2. Copy the `demo.hpp` file created in **Example 1** into this directory and update the include path in `multitaskv3_quad_windows.cpp`.
+3. Compile the application by executing the build script:
+```bash
+./build.sh
+
+```
+
+
+
+---
+
+### 2. Download the Model
+
+Download the required model package (`multi_task_v3_pt`) from the [Xilinx Model Zoo](https://www.xilinx.com/bin/public/openDownload?filename=multi_task_v3_pt-zcu102_zcu104_kv260-r3.0.0.tar.gz).
+
+---
+
+### 3. Deploy to the Target Board
+
+Transfer the compiled binary (`multitaskv3_quad_windows_x`) and the downloaded model archive (`multi_task_v3_pt-zcu102_zcu104_kv260-r3.0.0.tar.gz`) to your board using `scp`.
+
+---
+
+### 4. Setup and Run on the Board
+
+Run the following commands on the board to move files, extract the model, set environment variables, and start the application:
+
+```bash
+# Move model package and application binary
+sudo mv multi_task_v3_pt-zcu102_zcu104_kv260-r3.0.0.tar.gz /usr/share/vitis_ai_library/models/
+sudo mv multitaskv3_quad_windows_x ~/app/samples/multitaskv3/
+
+# Extract the model
+cd /usr/share/vitis_ai_library/models/
+sudo tar -xzvf multi_task_v3_pt-zcu102_zcu104_kv260-r3.0.0.tar.gz
+sudo rm multi_task_v3_pt-zcu102_zcu104_kv260-r3.0.0.tar.gz
+
+# Navigate to application directory and configure environment variables
+cd ~/app/samples/multitaskv3/
+export DEBUG_DEMO=1
+export DEMO_USE_VIDEO_WRITER=1
+export DEMO_CAMERA_WIDTH=640
+export DEMO_CAMERA_HEIGHT=360
+export DEMO_VIDEO_WRITER_WIDTH=1280
+export DEMO_VIDEO_WRITER_HEIGHT=720
+export DEMO_VIDEO_WRITER="appsrc ! videoconvert ! video/x-raw,format=RGB16,width=1280,height=720 ! fbdevsink device=/dev/fb0 sync=false max-lateness=-1"
+
+# Execute the application with root privileges (preserving environment variables)
+sudo -E ./multitaskv3_quad_windows_x 0 -t 4
+
+```
+
+> **Note:** Do not modify any width or height resolution values in the commands above.
 ---
 
 ## Troubleshooting
