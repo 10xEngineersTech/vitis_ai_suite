@@ -395,7 +395,7 @@ sudo -E ./multitaskv3_quad_windows_x 0 -t 4
 > **Note:** Do not modify any width or height resolution values in the commands above.
 ---
 
-## Troubleshooting
+# Troubleshooting
 
 ### Complete Black Screen
 **Cause:** Camera resolution or DPU buffer size exceeds available resolution range.
